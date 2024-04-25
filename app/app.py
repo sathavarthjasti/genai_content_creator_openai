@@ -1,11 +1,16 @@
 import streamlit as st
-import openai
 import os
 from dotenv import load_dotenv
+from openai import OpenAI
 
+# Load environment variables
 load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+api_key = os.getenv("OPENAI_API_KEY")
 
+# Set up OpenAI client
+client = OpenAI(api_key=api_key)
+
+# Streamlit app UI
 st.set_page_config(page_title="AI Content Generator", layout="centered")
 st.title("📝 AI Content Generator")
 
@@ -18,7 +23,7 @@ if st.button("Generate"):
     with st.spinner("Generating content..."):
         prompt = f"Write a {tone.lower()} {content_type.lower()} about '{topic}' in approximately {length} words."
         try:
-            response = openai.ChatCompletion.create(
+            response = client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=length * 2,
